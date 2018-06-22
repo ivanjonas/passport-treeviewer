@@ -4,13 +4,30 @@
   "description": "Coding challenge for Passport application",
   "main": "server.js",
   "scripts": {
-    "test": "node test",
-    "start": "node server.js"
+    "test": "babel-node test",
+    "start": "node server.js",
+    "build:client": "webpack --watch",
+    "dev-server": "webpack-dev-server",
+    "dev": "run-p build:client dev-server start"
   },
   "author": "@iv_njonas",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "express": "^4.16.3",
-    "tape": "^4.9.1"
+    "live-server": "^1.2.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "tape": "^4.9.1",
+    "webpack": "^3.1.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.3"
   }
 }
