@@ -1,0 +1,15 @@
+{
+  "name": "passport-treeviewer",
+  "version": "1.0.0",
+  "description": "Coding challenge for Passport application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "@iv_njonas",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
