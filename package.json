@@ -4,12 +4,13 @@
   "description": "Coding challenge for Passport application",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test",
     "start": "node server.js"
   },
   "author": "@iv_njonas",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "tape": "^4.9.1"
   }
 }
