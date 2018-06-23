@@ -6,7 +6,7 @@ export default class FactoryNode extends React.Component {
 
     return (
       <div className="FactoryNode">
-        <span>{data.factoryName}</span>
+        <span>{data.factoryName} ({data.min} : {data.max})</span>
         <ul>
           {
             data.nodes.map((element, index) => (
