@@ -1,7 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Button from './components/Button'
-import numGen from './client/scripts/lib/number-generator'
+import TreeviewerApp from './components/TreeviewerApp'
 
-ReactDOM.render(<Button />, document.getElementById('app'))
-console.log(numGen(15))
+ReactDOM.render(<TreeviewerApp />, document.getElementById('app'))
