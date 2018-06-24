@@ -1,5 +1,5 @@
 import test from 'tape'
-import generateNodes from '../src/client/scripts/lib/number-generator'
+import generateNodes from '../src/server/lib/number-generator'
 
 test('number generator', function (t) {
   var arr1 = generateNodes(15, 1, 100)
