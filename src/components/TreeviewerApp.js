@@ -1,6 +1,7 @@
 import React from 'react'
 import FactoryNode from './FactoryNode'
 import ActionBar from './ActionBar'
+const axios = window.axios // loaded from CDN on index.html
 
 export default class TreeviewerApp extends React.Component {
   state = {
@@ -8,6 +9,12 @@ export default class TreeviewerApp extends React.Component {
   }
 
   componentDidMount() {
+    axios.get('/api/getTree').then(response => {
+      this.setState(() => ({ tree: response.data }))
+    }).catch(error => {
+      console.error("Could not retrieve fresh tree data from server.")
+      throw error
+    })
   }
 
   handleCreateFactory = (e) => {
@@ -19,12 +26,12 @@ export default class TreeviewerApp extends React.Component {
       max: e.target.elements.max.value
     }
 
-    axios.post('/createFactory', data)
+    axios.post('/api/createFactory', data)
       .then(response => {
         if (!response.data.success) return
 
         this.setState(prevState => ({
-          tree: prevState.tree.push(response.data.newFactory)
+          tree: prevState.tree.concat(response.data.newFactory)
         }))
       })
       .catch(error => {
