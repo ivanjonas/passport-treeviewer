@@ -1,19 +1,19 @@
-var express = require("express")
-var path = require("path")
-var bodyParser = require('body-parser')
+import express from 'express'
+import path from 'path'
+import bodyParser from 'body-parser'
 
-var PORT = process.env.PORT || 3000
-var app = express()
+const PORT = process.env.PORT || 3000
+const app = express()
 
-app.use(express.static("public"))
+app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended : true}))
 app.use(bodyParser.json())
 
-app.get("/", function(req, res) {
-  res.sendFile(path.join(__dirname, "public", "index.html"))
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
-app.post("/createFactory", function(req, res) {
+app.post('/api/createFactory', (req, res) => {
   // TODO validate req.body for required fields, etc
   var newFactory = {
     factoryName: req.body.name,
@@ -28,6 +28,6 @@ app.post("/createFactory", function(req, res) {
   })
 })
 
-app.listen(PORT, function() {
-  console.log("Listening on port: " + PORT)
+app.listen(PORT, () => {
+  console.log('Listening on port: ' + PORT)
 })
