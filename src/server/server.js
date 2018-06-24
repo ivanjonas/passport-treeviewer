@@ -24,34 +24,8 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
-})
-
-app.get('/api/getTree', (req, res) => {
-  connection.query({
-    sql: 'select factory_node.id, factory_node.node_name, factory_node.min, factory_node.max, child_node.node_value from factory_node join child_node on factory_node.id = child_node.factory',
-    nestTables: true
-  }, (error, results) => {
-    if (error) throw error
-    res.send(transformMysqlData(results))
-  })
-})
-
-app.post('/api/createFactory', (req, res) => {
-  // TODO validate req.body for required fields, etc
-  var newFactory = {
-    factoryName: req.body.name,
-    min: req.body.min,
-    max: req.body.max,
-    nodes: []
-  }
-
-  res.json({
-    success: true,
-    newFactory
-  })
-})
+require('./routes/web-routes')(app)
+require('./routes/api-routes')(app, connection)
 
 app.listen(port, () => {
   console.log('Listening on port: ' + port)
