@@ -8,41 +8,6 @@ export default class TreeviewerApp extends React.Component {
   }
 
   componentDidMount() {
-    // TODO for now, fetch data from localstorage instead of server
-    try {
-      const string = localStorage.getItem('tree')
-      const tree = JSON.parse(string)
-
-      if (tree) {
-        this.setState(() => ({ tree }))
-      } else {
-        // sample tree data
-        const sampleTree = [{
-          factoryName: "First Node",
-          nodes: [10, 20, 30, 40, 50],
-          min: 10,
-          max: 50
-        },
-        {
-          factoryName: "Last Node",
-          nodes: [9, 18, 27],
-          min: 3,
-          max: 30
-        }]
-
-        this.setState(() => ({ tree: sampleTree }))
-      }
-    } catch (exception) {
-      // there was no (valid) data in localstorage
-      console.error('There was an error loading data into the Treeviewer App.')
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // if (prevState.tree.length !== this.state.tree.length) { // an insufficient test--node names may have changed
-    const jsonString = JSON.stringify(this.state.tree)
-    localStorage.setItem('tree', jsonString)
-    // }
   }
 
   handleCreateFactory = (e) => {
