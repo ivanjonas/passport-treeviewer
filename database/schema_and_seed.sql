@@ -1,7 +1,5 @@
-DROP DATABASE IF EXISTS passport_treeviewer;
-CREATE DATABASE passport_treeviewer;
-
-USE passport_treeviewer;
+DROP TABLE IF EXISTS child_node;
+DROP TABLE IF EXISTS factory_node;
 
 CREATE TABLE factory_node(
   id INT AUTO_INCREMENT NOT NULL,
