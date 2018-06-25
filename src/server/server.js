@@ -4,7 +4,6 @@ import database from './database.js'
 
 const connection = database.connect()
 
-
 const port = process.env.PORT || 3000
 const app = express()
 

@@ -24,7 +24,7 @@ module.exports = (app) => {
     if (!newFactory) {
       res.json({
         success: false,
-        message: messages.invalidData + 1
+        message: messages.invalidData
       })
       return
     }
@@ -33,8 +33,6 @@ module.exports = (app) => {
     // the updated tree to the client
     database.insertFactoryNode(newFactory)
       .then((insertId) => {
-        console.log('id:')
-        console.log(insertId)
         res.json({
           success: true,
           newFactory
@@ -43,7 +41,7 @@ module.exports = (app) => {
       .catch((error) => {
         res.json({
           success: false,
-          message: messages.invalidData + '\n' + error
+          message: messages.invalidData
         })
       })
   })

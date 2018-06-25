@@ -66,7 +66,6 @@ module.exports = {
           factoryNode.min,
           factoryNode.max
         ])
-      console.log(query)
       cachedConnection.query(query, (error, results) => {
         error ? reject('database rejected insert') : resolve(results.insertId)
       })
