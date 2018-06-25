@@ -12,11 +12,15 @@ const connectionConfig = process.env.JAWSDB_URL || {
   database: 'passport_treeviewer'
 }
 
+const queries = {
+  insertFactoryNode: 'INSERT INTO factory_node (node_name, min, max) VALUES (?, ?, ?)'
+}
+
 module.exports = {
   connect: () => {
     if (cachedConnection) {
       return cachedConnection
-    } 
+    }
 
     const connection = mysql.createConnection(connectionConfig)
     connection.connect((err) => {
@@ -52,5 +56,20 @@ module.exports = {
     // the connection may not be complete at this point, but no waiting is necessary.
     cachedConnection = connection
     return cachedConnection
+  },
+
+  insertFactoryNode: (factoryNode) => {
+    return new Promise((resolve, reject) => {
+      const query = mysql.format(queries.insertFactoryNode,
+        [
+          factoryNode.factoryName, // all prepared statement replacements with a single ? are automatically cleaned for injection attacks
+          factoryNode.min,
+          factoryNode.max
+        ])
+      console.log(query)
+      cachedConnection.query(query, (error, results) => {
+        error ? reject('database rejected insert') : resolve(results.insertId)
+      })
+    })
   }
 }
