@@ -82,10 +82,8 @@ module.exports = {
       cachedConnection.beginTransaction((error) => {
         if (error) {
           console.log(error)
-          cachedConnection.rollback(() => {
-            reject('database transaction error')
-            return
-          })
+          reject('database transaction error')
+          return
         }
 
         cachedConnection.query(queries.deleteChildNodes, factoryNode.id, (error) => {
@@ -97,6 +95,19 @@ module.exports = {
             })
           }
 
+          if (factoryNode.nodes.length === 0) {
+            // the deletion was all that was necessary
+            cachedConnection.commit((error) => {
+              if (error) {
+                console.log(error)
+                cachedConnection.rollback(() => {
+                  reject('database rejected insert')
+                });
+              }
+              resolve()
+            });
+          }
+
           const newValues = factoryNode.nodes.map((nodeValue) => {
             return [factoryNode.id, nodeValue]
           })
@@ -104,9 +115,20 @@ module.exports = {
           cachedConnection.query(queries.bulkInsertChildNode, [newValues], (error, results) => {
             if (error) {
               console.log(error)
-              reject('database rejected insert')
+              cachedConnection.rollback(() => {
+                reject('database rejected insert')
+                return
+              })
             } else {
-              resolve(factoryNode.nodes)
+              cachedConnection.commit((error) => {
+                if (error) {
+                  console.log(error)
+                  cachedConnection.rollback(() => {
+                    reject('database rejected insert')
+                  });
+                }
+                resolve()
+              });
             }
           })
         })
