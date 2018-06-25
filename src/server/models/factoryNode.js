@@ -8,6 +8,7 @@ const factoryNodeFactory = {
       || name.trim().length === 0
       || (typeof min !== 'number')
       || (typeof max !== 'number')
+      || min < 0
       || min > max) {
       // factoryNode parameters do not match requirements
       return
