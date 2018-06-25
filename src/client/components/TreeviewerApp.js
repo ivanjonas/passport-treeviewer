@@ -32,12 +32,19 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
+  handleGenerateNodes = (generateNodeRequest, fn) => {
+    socket.emit('/api/generateNodes', generateNodeRequest, (response) => {
+      fn(response)
+    })
+  }
+
   render() {
     var factories = this.state.tree.length ? (
       this.state.tree.map((factoryNode, index) => (
         <FactoryNode
           key={factoryNode.factoryName}
-          data={factoryNode}
+          factory={factoryNode}
+          handleGenerateNodes={this.handleGenerateNodes}
         />
       ))
     ) : (

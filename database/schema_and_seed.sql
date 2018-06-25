@@ -14,7 +14,7 @@ CREATE TABLE child_node(
   factory INT NOT NULL,
   node_value INT NOT NULL,
   PRIMARY KEY(id),
-  FOREIGN KEY (factory) REFERENCES factory_node(id)
+  FOREIGN KEY (factory) REFERENCES factory_node(id) ON DELETE CASCADE
 );
 
 INSERT INTO factory_node (node_name, min, max)

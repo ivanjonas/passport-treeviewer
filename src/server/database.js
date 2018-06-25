@@ -13,7 +13,9 @@ const connectionConfig = process.env.JAWSDB_URL || {
 }
 
 const queries = {
-  insertFactoryNode: 'INSERT INTO factory_node (node_name, min, max) VALUES (?, ?, ?)'
+  insertFactoryNode: 'INSERT INTO factory_node (node_name, min, max) VALUES (?, ?, ?)',
+  bulkInsertChildNode: 'INSERT INTO child_node (factory, node_value) VALUES ?',
+  deleteChildNodes: 'DELETE FROM child_node WHERE factory = ?'
 }
 
 module.exports = {
@@ -68,6 +70,46 @@ module.exports = {
         ])
       cachedConnection.query(query, (error, results) => {
         error ? reject('database rejected insert') : resolve(results.insertId)
+      })
+    })
+  },
+
+  updateChildNodes: (factoryNode) => {
+    return new Promise((resolve, reject) => {
+      // delete existing child nodes and create new ones
+      // two queries, so use a transaction in case a rollback is needed
+
+      cachedConnection.beginTransaction((error) => {
+        if (error) {
+          console.log(error)
+          cachedConnection.rollback(() => {
+            reject('database transaction error')
+            return
+          })
+        }
+
+        cachedConnection.query(queries.deleteChildNodes, factoryNode.id, (error) => {
+          if (error) {
+            console.log(error)
+            cachedConnection.rollback(() => {
+              reject('database rejected deletion of existing child nodes')
+              return
+            })
+          }
+
+          const newValues = factoryNode.nodes.map((nodeValue) => {
+            return [factoryNode.id, nodeValue]
+          })
+
+          cachedConnection.query(queries.bulkInsertChildNode, [newValues], (error, results) => {
+            if (error) {
+              console.log(error)
+              reject('database rejected insert')
+            } else {
+              resolve(factoryNode.nodes)
+            }
+          })
+        })
       })
     })
   }
