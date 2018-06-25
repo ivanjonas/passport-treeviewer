@@ -48,7 +48,7 @@ export default class FactoryNode extends React.Component {
           <button onClick={this.handleGenerateClick}>
             {factory.length ? 'Regen Child Nodes' : 'Generate Child Nodes'}
           </button>
-          <input type="number" min="1" max="15" step="1" name="count"/>
+          <input type="number" min="0" max="15" step="1" name="count"/>
         </div>
       </div>
     )

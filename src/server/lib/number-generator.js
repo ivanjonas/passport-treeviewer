@@ -3,7 +3,7 @@ function randNumberBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default function generateNodes(count, min, max) {
+export default function generateRandomNumberArray(count, min = 0, max = 256) {
   var i
   var results
 
@@ -11,17 +11,8 @@ export default function generateNodes(count, min, max) {
     throw "count cannot be null or undefined"
   }
 
-  min = min || 0
-  max = max || 255
-
-  if (count < 1 || count > 15) {
-    throw "count must be between 1 and 15"
-  }
-  if (min < 0) {
-    throw "min must be non-negative"
-  }
-  if (max < 0) {
-    throw "max must be non-negative"
+  if (count < 0 || min < 0 || max < 0) {
+    throw "count, min, and max must be non-negative"
   }
   if (min > max) {
     throw "min must not be greater than max"

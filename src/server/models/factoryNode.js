@@ -26,7 +26,7 @@ const factoryNodeFactory = {
 const generateChildNodes = (oldFactoryNode, count) => {
   if (oldFactoryNode == null
     || typeof count !== 'number'
-    || count < 1
+    || count < 0
     || count > 15) {
     return
   }
