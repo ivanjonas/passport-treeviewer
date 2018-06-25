@@ -36,21 +36,35 @@ test('transformMysqlData', t => {
   }]
 
   const expectedResult1 = [{
-    "id": 1,
-    "factoryName": "First Factory",
-    "min": 10,
-    "max": 50,
-    "nodes": [10, 20, 30, 40, 50]
+    id: 1,
+    factoryName: 'First Factory',
+    min: 10,
+    max: 50,
+    nodes: [10, 20, 30, 40, 50]
   }, {
-    "id": 2,
-    "factoryName": "Second Factory",
-    "min": 3,
-    "max": 30,
-    "nodes": [9, 18, 27]
+    id: 2,
+    factoryName: 'Second Factory',
+    min: 3,
+    max: 30,
+    nodes: [9, 18, 27]
   }]
 
-  const result1 = transformMysqlData(sample1)
-  t.deepEqual(result1, expectedResult1, 'basic test')
+  t.deepEqual(transformMysqlData(sample1), expectedResult1, 'basic test')
+
+  const sample2 = [{
+    factory_node: { id: 3, node_name: 'Factory Without Nodes', min: 3, max: 30 },
+    child_node: { node_value: null }
+  }]
+
+  const expectedResult2 = [{
+    id: 3,
+    factoryName: 'Factory Without Nodes',
+    min: 3,
+    max: 30,
+    nodes: []
+  }]
+
+  t.deepEqual(transformMysqlData(sample2), expectedResult2, 'factory without nodes')
 
   t.end()
 })

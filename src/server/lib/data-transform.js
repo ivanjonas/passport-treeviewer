@@ -13,12 +13,13 @@ export function transformMysqlData(mysqlData) {
     if (existingObject) {
       existingObject.nodes.push(row.child_node.node_value)
     } else {
+      const childValue = row.child_node.node_value
       const newObject = {
         id: row.factory_node.id,
         factoryName: row.factory_node.node_name,
         min: row.factory_node.min,
         max: row.factory_node.max,
-        nodes: [row.child_node.node_value]
+        nodes: childValue ? [row.child_node.node_value] : []
       }
       accumulator.push(newObject)
     }
