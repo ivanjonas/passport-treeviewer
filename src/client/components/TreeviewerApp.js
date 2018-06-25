@@ -38,6 +38,12 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
+  handleDeleteFactory = (factoryId, fn) => {
+    socket.emit('/api/deleteFactory', factoryId, (response) => {
+      fn(response)
+    })
+  }
+
   render() {
     var factories = this.state.tree.length ? (
       this.state.tree.map((factoryNode, index) => (
@@ -45,6 +51,7 @@ export default class TreeviewerApp extends React.Component {
           key={factoryNode.factoryName}
           factory={factoryNode}
           handleGenerateNodes={this.handleGenerateNodes}
+          handleDeleteFactory={this.handleDeleteFactory}
         />
       ))
     ) : (

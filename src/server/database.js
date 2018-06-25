@@ -15,7 +15,8 @@ const connectionConfig = process.env.JAWSDB_URL || {
 const queries = {
   insertFactoryNode: 'INSERT INTO factory_node (node_name, min, max) VALUES (?, ?, ?)',
   bulkInsertChildNode: 'INSERT INTO child_node (factory, node_value) VALUES ?',
-  deleteChildNodes: 'DELETE FROM child_node WHERE factory = ?'
+  deleteChildNodes: 'DELETE FROM child_node WHERE factory = ?',
+  deleteFactoryNode: 'DELETE FROM factory_node WHERE id = ?'
 }
 
 module.exports = {
@@ -132,6 +133,20 @@ module.exports = {
             }
           })
         })
+      })
+    })
+  },
+
+  deleteFactoryNode: (factoryNodeId) => {
+    return new Promise((resolve, reject) => {
+      cachedConnection.query(queries.deleteFactoryNode, factoryNodeId, (error) => {
+        if (error) {
+          console.log(error)
+          reject('database rejected deletion')
+          return
+        }
+
+        resolve()
       })
     })
   }

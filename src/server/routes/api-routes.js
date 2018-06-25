@@ -26,6 +26,12 @@ function sendTree(receiver) {
   })
 }
 
+function findById(factoryId) {
+  return cachedTree.find(
+    (factory) => factory.id = factoryId
+  )
+}
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('a user connected')
@@ -65,10 +71,9 @@ module.exports = (io) => {
     })
 
     socket.on('/api/generateNodes', (generateNodeRequest, fn) => {
-      const count = generateNodeRequest.count
-      const factory = generateChildNodes(cachedTree.find(
-        (factory) => factory.id = generateNodeRequest.factoryId
-      ), generateNodeRequest.count)
+      const factory = generateChildNodes(
+        findById(generateNodeRequest.factoryId),
+        generateNodeRequest.count)
 
       if (!factory) {
         fn(messageObject(false, messages.invalidArguments))
@@ -83,6 +88,29 @@ module.exports = (io) => {
         .catch((error) => {
           console.log(error)
           fn(messageObject(false, messages.genericDatabaseError))
+        })
+    })
+
+    socket.on('/api/deleteFactory', (factoryNodeId, fn) => {
+      if (typeof factoryNodeId !== 'number') {
+        fn(messageObject(false, messages.invalidArguments))
+        return
+      }
+
+      const factory = findById(factoryNodeId)
+      if (!factory) {
+        fn(messageObject(false, messages.invalidArguments))
+        return
+      }
+
+      database.deleteFactoryNode(factoryNodeId)
+        .then(() => {
+          fn({ success: true })
+          sendTree(io)
+        })
+        .catch((error) => {
+          console.log(error)
+          fn(messageObject(false, messages.factoryNotFound))
         })
     })
   })

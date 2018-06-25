@@ -29,6 +29,14 @@ export default class FactoryNode extends React.Component {
     })
   }
 
+  handleDeleteFactory = (e) => {
+    e.preventDefault()
+
+    this.props.handleDeleteFactory(this.props.factory.id, (result) => {
+      !result.success && alert(result.message)
+    })
+  }
+
   render() {
     const factory = this.props.factory
 
@@ -44,11 +52,11 @@ export default class FactoryNode extends React.Component {
         </ul>
         <div>
           <button>Rename</button>
-          <button>Delete</button>
+          <button onClick={this.handleDeleteFactory}>Delete</button>
           <button onClick={this.handleGenerateNodes}>
             {factory.length ? 'Regen Child Nodes' : 'Generate Child Nodes'}
           </button>
-          <input type="number" min="0" max="15" step="1" name="count"/>
+          <input type="number" min="0" max="15" step="1" name="count" />
         </div>
       </div>
     )
