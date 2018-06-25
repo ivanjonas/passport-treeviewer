@@ -1,7 +1,7 @@
 import React from 'react'
 import FactoryNode from './FactoryNode'
 import ActionBar from './ActionBar'
-const axios = window.axios // loaded from CDN on index.html
+const socket = io() // loaded from CDN on index.html
 
 export default class TreeviewerApp extends React.Component {
   state = {
@@ -9,12 +9,11 @@ export default class TreeviewerApp extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/api/getTree').then(response => {
-      this.setState(() => ({ tree: response.data }))
-    }).catch(error => {
-      console.error("Could not retrieve fresh tree data from server.")
-      throw error
+    socket.on('/api/getTree', (tree) => {
+      this.setState(() => ({ tree }))
     })
+
+    // socket.emit('/api/getTree') // this is how you request a new tree
   }
 
   handleCreateFactory = (e) => {
@@ -26,17 +25,11 @@ export default class TreeviewerApp extends React.Component {
       max: e.target.elements.max.value
     }
 
-    axios.post('/api/createFactory', data)
-      .then(response => {
-        if (!response.data.success) return
-
-        this.setState(prevState => ({
-          tree: prevState.tree.concat(response.data.newFactory)
-        }))
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    socket.emit('/api/createFactory', data, (response) => {
+      if (!response.success) {
+        alert(response.message)
+      } // else it was a success and the server will broadcast the new tree
+    })
   }
 
   render() {
@@ -48,8 +41,8 @@ export default class TreeviewerApp extends React.Component {
         />
       ))
     ) : (
-      "There are no factory nodes... create one?"
-    )
+        "There are no factory nodes... create one?"
+      )
     return (
       <div>
         {factories}
