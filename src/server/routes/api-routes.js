@@ -28,7 +28,7 @@ function sendTree(receiver) {
 
 function findById(factoryId) {
   return cachedTree.find(
-    (factory) => factory.id = factoryId
+    (factory) => factory.id === factoryId
   )
 }
 
