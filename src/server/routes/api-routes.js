@@ -113,5 +113,28 @@ module.exports = (io) => {
           fn(messageObject(false, messages.factoryNotFound))
         })
     })
+
+    socket.on('/api/renameFactory', (renameFactoryRequest, fn) => {
+      const newName = renameFactoryRequest.name.toString().trim()
+      const id = renameFactoryRequest.factoryId
+
+      if (newName.length === 0 || typeof id !== 'number') {
+        fn(messageObject(false, messages.invalidArguments))
+      }
+
+      const factory = findById(renameFactoryRequest.factoryId)
+      if (!factory) {
+        fn(messageObject(false, messages.invalidArguments))
+      }
+
+      database.renameFactoryNode(id, newName)
+        .then(() => {
+          fn({ success: true })
+          sendTree(io)
+        }).catch((error) => {
+          console.log(error)
+          fn(messageObject(false, messages.genericDatabaseError))
+        })
+    })
   })
 }

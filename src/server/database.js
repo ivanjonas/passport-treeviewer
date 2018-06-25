@@ -16,7 +16,8 @@ const queries = {
   insertFactoryNode: 'INSERT INTO factory_node (node_name, min, max) VALUES (?, ?, ?)',
   bulkInsertChildNode: 'INSERT INTO child_node (factory, node_value) VALUES ?',
   deleteChildNodes: 'DELETE FROM child_node WHERE factory = ?',
-  deleteFactoryNode: 'DELETE FROM factory_node WHERE id = ?'
+  deleteFactoryNode: 'DELETE FROM factory_node WHERE id = ?',
+  updateFactoryNodeName: 'UPDATE factory_node SET node_name = ? WHERE id = ?'
 }
 
 module.exports = {
@@ -146,6 +147,19 @@ module.exports = {
           return
         }
 
+        resolve()
+      })
+    })
+  },
+
+  renameFactoryNode: (factoryNodeId, newName) => {
+    return new Promise((resolve, reject) => {
+      cachedConnection.query(queries.updateFactoryNodeName, [newName, factoryNodeId], (error) => {
+        if (error) {
+          console.log(error)
+          reject('database rejected rename/update')
+          return
+        }
         resolve()
       })
     })

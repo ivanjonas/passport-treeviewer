@@ -37,6 +37,26 @@ export default class FactoryNode extends React.Component {
     })
   }
 
+  handleRenameFactory = (e) => {
+    e.preventDefault()
+
+    const nameField =  e.target.previousElementSibling
+    const newName = nameField.value.trim()
+
+    if (newName.length === 0) {
+      return
+    }
+
+    this.props.handleRenameFactory({
+      factoryId: this.props.factory.id,
+      name: newName
+    }, (result) => {
+      if (!result.success) {
+        alert('rename was unsuccessful')
+      }
+    })
+  }
+
   render() {
     const factory = this.props.factory
 
@@ -51,7 +71,8 @@ export default class FactoryNode extends React.Component {
           }
         </ul>
         <div>
-          <button>Rename</button>
+          <input type="text" name="name" placeholder="new name" />
+          <button onClick={this.handleRenameFactory}>Rename</button>
           <button onClick={this.handleDeleteFactory}>Delete</button>
           <button onClick={this.handleGenerateNodes}>
             {factory.length ? 'Regen Child Nodes' : 'Generate Child Nodes'}
