@@ -43,25 +43,26 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
-  handleDeleteFactory = (factoryId, fn) => {
-    socket.emit('/api/deleteFactory', factoryId, (response) => {
-      fn(response)
-    })
+  handleDeleteFactory = (factoryId) => {
+    // User wants to delete a factory. Confirm first.
+
+    const emitDeleteRequest = () => {
+      socket.emit('/api/deleteFactory', factoryId, this.modalRespondToSocketResponse)
+    }
+
+    this.setState((prevState) => ({
+      isModalOpen: true,
+      mode: TOKENS.modes.delete,
+      handleModalSubmission: emitDeleteRequest
+    }))
   }
 
   handleRenameFactory = (factoryId) => {
-    // user wants to rename a factory. Show the appropriate modal content
+    // User wants to rename a factory. Ask for the new name with a modal.
 
     const emitRenameRequest = (name) => {
-      // pull up the modal and confirm the request data
       const request = { factoryId, name }
-      socket.emit('/api/renameFactory', request, (response) => {
-        if (response.success) {
-          this.handleCloseModal()
-        } else {
-          alert(response.message)
-        }
-      })
+      socket.emit('/api/renameFactory', request, this.modalRespondToSocketResponse)
     }
 
     this.setState((prevState) => ({
@@ -118,5 +119,11 @@ export default class TreeviewerApp extends React.Component {
         />
       </div>
     )
+  }
+
+  // Utils:
+
+  modalRespondToSocketResponse = (response) => {
+    response.success ? this.handleCloseModal() : alert(response.message)
   }
 }

@@ -30,6 +30,26 @@ export default class Modal extends React.Component {
         </form>
       )
     }
+
+    modalContent[TOKENS.modes.delete] = {
+      title: "Are you sure you want to delete this factory?",
+      body: (
+        <div>
+          <button
+            type="submit"
+            className="Button"
+            onClick={(e) => {
+              e.preventDefault()
+
+              this.props.handleModalSubmission()
+            }}
+          >
+            Delete
+          </button>
+          <button className='Button' onClick={this.props.handleRequestClose}>No, don't delete</button>
+        </div>
+      )
+    }
   }
 
   render() {

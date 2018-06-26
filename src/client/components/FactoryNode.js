@@ -32,9 +32,7 @@ export default class FactoryNode extends React.Component {
   handleDeleteFactory = (e) => {
     e.preventDefault()
 
-    this.props.handleDeleteFactory(this.props.factory.id, (result) => {
-      !result.success && alert(result.message)
-    })
+    this.props.handleDeleteFactory(this.props.factory.id)
   }
 
   handleRenameFactory = (e) => {
