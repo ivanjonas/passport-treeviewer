@@ -40,21 +40,7 @@ export default class FactoryNode extends React.Component {
   handleRenameFactory = (e) => {
     e.preventDefault()
 
-    const nameField = e.target.previousElementSibling
-    const newName = nameField.value.trim()
-
-    if (newName.length === 0) {
-      return
-    }
-
-    this.props.handleRenameFactory({
-      factoryId: this.props.factory.id,
-      name: newName
-    }, (result) => {
-      if (!result.success) {
-        alert(result.message)
-      }
-    })
+    this.props.handleRenameFactory(this.props.factory.id)
   }
 
   handleChangeBounds = (e) => {
@@ -105,7 +91,6 @@ export default class FactoryNode extends React.Component {
           </form>
         </div>
         <div>
-          <input type="text" name="name" placeholder="new name" />
           <button onClick={this.handleRenameFactory}>Rename</button>
           <button onClick={this.handleDeleteFactory}>Delete</button>
           <button onClick={this.handleGenerateNodes}>

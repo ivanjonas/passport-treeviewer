@@ -1,11 +1,16 @@
 import React from 'react'
 import FactoryNode from './FactoryNode'
 import ActionBar from './ActionBar'
+import Modal from './Modal'
+import TOKENS from '../config/tokens'
 const socket = io() // loaded from CDN on index.html
 
 export default class TreeviewerApp extends React.Component {
   state = {
-    tree: []
+    tree: [],
+    mode: TOKENS.modes.default,
+    isModalOpen: false,
+    handleModalSubmission: undefined
   }
 
   componentDidMount() {
@@ -44,16 +49,46 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
-  handleRenameFactory = (renameFactoryRequest, fn) => {
-    socket.emit('/api/renameFactory', renameFactoryRequest, (response) => {
-      fn(response)
-    })
+  handleRenameFactory = (factoryId) => {
+    // user wants to rename a factory. Show the appropriate modal content
+
+    const emitRenameRequest = (name) => {
+      // pull up the modal and confirm the request data
+      const request = { factoryId, name }
+      socket.emit('/api/renameFactory', request, (response) => {
+        if (response.success) {
+          this.handleCloseModal()
+        } else {
+          alert(response.message)
+        }
+      })
+    }
+
+    this.setState((prevState) => ({
+      isModalOpen: true,
+      mode: TOKENS.modes.rename,
+      handleModalSubmission: emitRenameRequest
+    }))
   }
 
   handleChangeBounds = (changeBoundsRequest, fn) => {
     socket.emit('/api/changeBounds', changeBoundsRequest, (response) => {
       fn(response)
     })
+  }
+
+  handleCloseModal = () => {
+    // These two groups of state are different in order to avoid
+    // a visual bug when closing the modal.
+    this.setState((prevState) => ({
+      isModalOpen: false,
+      handleModalSubmission: undefined
+    }))
+    window.setTimeout(() => {
+      this.setState((prevState) => ({
+        mode: TOKENS.modes.default
+      }))
+    }, TOKENS.modal.fadeoutDuration)
   }
 
   render() {
@@ -75,6 +110,12 @@ export default class TreeviewerApp extends React.Component {
       <div>
         {factories}
         <ActionBar handleCreateFactory={this.handleCreateFactory} />
+        <Modal
+          isOpen={this.state.isModalOpen}
+          mode={this.state.mode}
+          handleModalSubmission={this.state.handleModalSubmission}
+          handleRequestClose={this.handleCloseModal}
+        />
       </div>
     )
   }
