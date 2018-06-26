@@ -5,6 +5,7 @@ export default Object.freeze({
     default: 0,
     generateChildNodes: 2,
     rename: 3,
+    changeBounds: 4,
     delete: 5
   },
   modal: {

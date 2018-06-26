@@ -22,35 +22,7 @@ export default class FactoryNode extends React.Component {
   handleChangeBounds = (e) => {
     e.preventDefault()
 
-    const minField = e.target.elements.min
-    const maxField = e.target.elements.max
-    let min
-    let max
-
-    try {
-      min = parseInt(minField.value, 10)
-      max = parseInt(maxField.value, 10)
-    } catch (error) {
-      // type error. Is this even possible with html validation?
-      return
-    }
-
-    // validate
-    if (min > max) {
-      maxField.classList.add('error')
-      // max must be greater than min
-      return
-    }
-
-    this.props.handleChangeBounds({
-      factoryId: this.props.factory.id,
-      min,
-      max
-    }, (result) => {
-      if (!result.success) {
-        alert(result.message)
-      }
-    })
+    this.props.handleChangeBounds(this.props.factory.id)
   }
 
   render() {
@@ -59,12 +31,16 @@ export default class FactoryNode extends React.Component {
     return (
       <div className="FactoryNode">
         <div>
-          {factory.factoryName} ({factory.min} : {factory.max})
-          <form onSubmit={this.handleChangeBounds}>
-            <input type="number" name="min" min="0" step="1" defaultValue={factory.min} />
-            <input type="number" name="max" min="0" step="1" defaultValue={factory.max} />
-            <button type="submit">Change bounds</button>
-          </form>
+          {factory.factoryName}
+          <span
+            className="FactoryNode-boundary"
+            role="button"
+            tabIndex="0"
+            onClick={this.handleChangeBounds}
+          >
+            ({factory.min} : {factory.max})
+          </span>
+
         </div>
         <div>
           <button onClick={this.handleRenameFactory}>Rename</button>

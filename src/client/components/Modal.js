@@ -23,6 +23,11 @@ export default class Modal extends React.Component {
       body: React.createElement(ModalContent.DeleteFactoryNode, attributes)
     }
 
+    modalContent[TOKENS.modes.changeBounds] = {
+      title: "Set new bounds for child nodes?",
+      body: React.createElement(ModalContent.ChangeBounds, attributes)
+    }
+
     modalContent[TOKENS.modes.generateChildNodes] = {
       title: "Generating will remove existing child nodes. Continue?",
       body: React.createElement(ModalContent.GenerateChildNodes, attributes)

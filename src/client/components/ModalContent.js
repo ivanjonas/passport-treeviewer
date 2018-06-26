@@ -72,8 +72,48 @@ class RenameFactoryNode extends React.Component {
       }}>
         <input type="text" name="name" placeholder="new name" />
         <button type="submit" className="Button">Rename</button>
-        <button className='Button' onClick={this.props.handleRequestClose}>Never mind</button>
+        <button className='Button' onClick={this.props.handleRequestClose}>Keep current name</button>
       </form>
+    )
+  }
+}
+
+class ChangeBounds extends React.Component {
+  render() {
+    return (
+      <div>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+
+          const minField = e.target.elements.min
+          const maxField = e.target.elements.max
+          let min
+          let max
+
+          try {
+            min = parseInt(minField.value, 10)
+            max = parseInt(maxField.value, 10)
+          } catch (error) {
+            // type error. Is this even possible or necessary with html validation?
+            // TODO additional validation
+            return
+          }
+
+          // validate
+          if (min > max) {
+            maxField.classList.add('error')
+            // TODO additional validation
+            return
+          }
+
+          this.props.handleModalSubmission(min, max)
+        }}>
+          <input type="number" name="min" min="0" step="1" />
+          <input type="number" name="max" min="0" step="1" />
+          <button type="submit">Change bounds</button>
+        </form>
+        <button className='Button' onClick={this.props.handleRequestClose}>Keep current bounds</button>
+      </div>
     )
   }
 }
@@ -99,4 +139,4 @@ class DeleteFactoryNode extends React.Component {
   }
 }
 
-export default { GenerateChildNodes, RenameFactoryNode, DeleteFactoryNode }
+export default { GenerateChildNodes, RenameFactoryNode, ChangeBounds, DeleteFactoryNode }

@@ -79,10 +79,17 @@ export default class TreeviewerApp extends React.Component {
     }))
   }
 
-  handleChangeBounds = (changeBoundsRequest, fn) => {
-    socket.emit('/api/changeBounds', changeBoundsRequest, (response) => {
-      fn(response)
-    })
+  handleChangeBounds = (factoryId) => {
+    const emitChangeBounds = (min, max) => {
+      const request = { factoryId, min, max }
+      socket.emit('/api/changeBounds', request, this.modalRespondToSocketResponse)
+    }
+
+    this.setState((prevState) => ({
+      isModalOpen: true,
+      mode: TOKENS.modes.changeBounds,
+      handleModalSubmission: emitChangeBounds
+    }))
   }
 
   handleCloseModal = () => {
