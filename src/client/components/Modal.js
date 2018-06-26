@@ -8,58 +8,24 @@ ReactModal.setAppElement(document.getElementById('app'))
 const modalContent = {}
 export default class Modal extends React.Component {
   componentWillMount() {
+    const attributes = {
+      handleRequestClose: this.props.handleRequestClose,
+      handleModalSubmission: this.props.handleModalSubmission
+    }
 
     modalContent[TOKENS.modes.rename] = {
       title: "New factory name:",
-      body: (
-        <form onSubmit={(e) => {
-          e.preventDefault()
-
-          const nameField = e.target.elements.name
-          const newName = nameField.value.trim()
-
-          if (newName.length === 0) {
-            // TODO error message/HTML validation
-            return
-          }
-
-          this.props.handleModalSubmission(newName)
-        }}>
-          <input type="text" name="name" placeholder="new name" />
-          <button type="submit" className="Button">Rename</button>
-          <button className='Button' onClick={this.props.handleRequestClose}>Never mind</button>
-        </form>
-      )
+      body: React.createElement(ModalContent.RenameFactoryNode, attributes)
     }
 
     modalContent[TOKENS.modes.delete] = {
       title: "Are you sure you want to delete this factory?",
-      body: (
-        <div>
-          <button
-            type="submit"
-            className="Button"
-            onClick={(e) => {
-              e.preventDefault()
-
-              this.props.handleModalSubmission()
-            }}
-          >
-            Delete
-          </button>
-          <button className='Button' onClick={this.props.handleRequestClose}>No, don't delete</button>
-        </div>
-      )
+      body: React.createElement(ModalContent.DeleteFactoryNode, attributes)
     }
 
     modalContent[TOKENS.modes.generateChildNodes] = {
       title: "Generating will remove existing child nodes. Continue?",
-      body: React.createElement(ModalContent.GenerateChildNodes,
-        {
-          handleRequestClose: this.props.handleRequestClose,
-          handleModalSubmission: this.props.handleModalSubmission
-        }
-      )
+      body: React.createElement(ModalContent.GenerateChildNodes, attributes)
     }
   }
 

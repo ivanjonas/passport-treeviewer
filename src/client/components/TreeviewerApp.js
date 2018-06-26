@@ -121,7 +121,7 @@ export default class TreeviewerApp extends React.Component {
         <Modal
           isOpen={this.state.isModalOpen}
           mode={this.state.mode}
-          handleModalSubmission={this.state.handleModalSubmission}
+          handleModalSubmission={this.handleModalSubmission}
           handleRequestClose={this.handleCloseModal}
         />
       </div>
@@ -133,4 +133,13 @@ export default class TreeviewerApp extends React.Component {
   modalRespondToSocketResponse = (response) => {
     response.success ? this.handleCloseModal() : alert(response.message)
   }
+
+  handleModalSubmission = (function () {
+    // * This utility method merely passes all arguments to a function 
+    // * that is set in the top-level state. It is not possible to pass 
+    // * state into the props of a subcomponent, so this function fills 
+    // * the gap.
+    // ! This must not be an arrow function to access `arguments` array
+    this.state.handleModalSubmission.apply(this, arguments)
+  }).bind(this)
 }
