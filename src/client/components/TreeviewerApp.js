@@ -37,10 +37,17 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
-  handleGenerateNodes = (generateNodeRequest, fn) => {
-    socket.emit('/api/generateNodes', generateNodeRequest, (response) => {
-      fn(response)
-    })
+  handleGenerateNodes = (factoryId) => {
+    const emitGenerateNodesRequest = (count) => {
+      const request = { factoryId, count }
+      socket.emit('/api/generateNodes', request, this.modalRespondToSocketResponse)
+    }
+
+    this.setState((prevState) => ({
+      isModalOpen: true,
+      mode: TOKENS.modes.generateChildNodes,
+      handleModalSubmission: emitGenerateNodesRequest
+    }))
   }
 
   handleDeleteFactory = (factoryId) => {

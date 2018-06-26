@@ -3,8 +3,9 @@
 export default Object.freeze({
   modes: {
     default: 0,
-    rename: 1,
-    delete: 2
+    generateChildNodes: 2,
+    rename: 3,
+    delete: 5
   },
   modal: {
     fadeoutDuration: 200

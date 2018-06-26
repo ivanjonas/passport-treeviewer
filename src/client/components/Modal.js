@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactModal from 'react-modal'
+import ModalContent from './ModalContent'
 import TOKENS from '../config/tokens'
 
 ReactModal.setAppElement(document.getElementById('app'))
@@ -48,6 +49,16 @@ export default class Modal extends React.Component {
           </button>
           <button className='Button' onClick={this.props.handleRequestClose}>No, don't delete</button>
         </div>
+      )
+    }
+
+    modalContent[TOKENS.modes.generateChildNodes] = {
+      title: "Generating will remove existing child nodes. Continue?",
+      body: React.createElement(ModalContent.GenerateChildNodes,
+        {
+          handleRequestClose: this.props.handleRequestClose,
+          handleModalSubmission: this.props.handleModalSubmission
+        }
       )
     }
   }
