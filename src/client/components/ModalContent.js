@@ -4,6 +4,42 @@
 
 import React from 'react'
 
+class CreateFactoryNode extends React.Component {
+  state = {
+    isSubmitButtonEnabled: true
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault()
+
+    let name = e.target.elements.name.value.trim()
+    let min = e.target.elements.min.value.trim()
+    let max = e.target.elements.max.value.trim()
+
+    this.props.handleModalSubmission(name, min, max)
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>Name: <input type="text" name="name" /></label>
+          <label>Min: <input type="number" name="min" /></label>
+          <label>Max: <input type="number" name="max" /></label>
+          <button
+            type='submit'
+            className='Button Button--big'
+            disabled={!this.state.isSubmitButtonEnabled}
+          >
+            Create new factory node
+          </button>
+        </form>
+        <button className='Button' onClick={this.props.handleRequestClose}>Never mind</button>
+      </div>
+    )
+  }
+}
+
 class GenerateChildNodes extends React.Component {
   state = {
     isSubmitButtonEnabled: true
@@ -139,4 +175,4 @@ class DeleteFactoryNode extends React.Component {
   }
 }
 
-export default { GenerateChildNodes, RenameFactoryNode, ChangeBounds, DeleteFactoryNode }
+export default { CreateFactoryNode, GenerateChildNodes, RenameFactoryNode, ChangeBounds, DeleteFactoryNode }

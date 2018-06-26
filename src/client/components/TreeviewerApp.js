@@ -21,20 +21,17 @@ export default class TreeviewerApp extends React.Component {
     // socket.emit('/api/getTree') // this is how you request a new tree
   }
 
-  handleCreateFactory = (e) => {
-    e.preventDefault()
-
-    var data = {
-      name: e.target.elements.name.value,
-      min: e.target.elements.min.value,
-      max: e.target.elements.max.value
+  handleCreateFactoryNode = () => {
+    const emitCreateFactoryNode = (name, min, max) => {
+      const request = { name, min, max }
+      socket.emit('/api/createFactory', request, this.modalRespondToSocketResponse)
     }
 
-    socket.emit('/api/createFactory', data, (response) => {
-      if (!response.success) {
-        alert(response.message)
-      } // else it was a success and the server will broadcast the new tree
-    })
+    this.setState((prevState) => ({
+      isModalOpen: true,
+      mode: TOKENS.modes.createFactoryNode,
+      handleModalSubmission: emitCreateFactoryNode
+    }))
   }
 
   handleGenerateNodes = (factoryId) => {
@@ -107,7 +104,7 @@ export default class TreeviewerApp extends React.Component {
   }
 
   render() {
-    var factories = this.state.tree.length ? (
+    const factories = this.state.tree.length ? (
       this.state.tree.map((factoryNode, index) => (
         <FactoryNode
           key={factoryNode.factoryName}
@@ -124,7 +121,7 @@ export default class TreeviewerApp extends React.Component {
     return (
       <div>
         {factories}
-        <ActionBar handleCreateFactory={this.handleCreateFactory} />
+        <ActionBar handleCreateFactoryNode={this.handleCreateFactoryNode} />
         <Modal
           isOpen={this.state.isModalOpen}
           mode={this.state.mode}
@@ -138,6 +135,8 @@ export default class TreeviewerApp extends React.Component {
   // Utils:
 
   modalRespondToSocketResponse = (response) => {
+    // * For most modals, simply close the modal on success
+    // * and alert the user of any back end message on failure.
     response.success ? this.handleCloseModal() : alert(response.message)
   }
 

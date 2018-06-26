@@ -13,8 +13,13 @@ export default class Modal extends React.Component {
       handleModalSubmission: this.props.handleModalSubmission
     }
 
+    modalContent[TOKENS.modes.createFactoryNode] = {
+      title: "Create new Factory Node",
+      body: React.createElement(ModalContent.CreateFactoryNode, attributes)
+    }
+
     modalContent[TOKENS.modes.rename] = {
-      title: "New factory name:",
+      title: "Rename Factory Node?",
       body: React.createElement(ModalContent.RenameFactoryNode, attributes)
     }
 
