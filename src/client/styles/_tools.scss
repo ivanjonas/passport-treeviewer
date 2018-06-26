@@ -1,0 +1,5 @@
+@mixin trail-border {
+    border-width: 0 0 2px 2px;
+    border-style: solid;
+    border-color: $color-accent;
+}

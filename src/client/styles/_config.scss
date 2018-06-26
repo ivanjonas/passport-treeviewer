@@ -1,0 +1,22 @@
+$color-mechanicalBlue: #F0FCFD;
+$color-history: #9ECBCC;
+$color-dullAqua: #5C948E;
+$color-assignment: #FBEB76;
+$color-peacocks: #394B49;
+
+$color-background: $color-mechanicalBlue;
+$color-foreground: $color-peacocks;
+
+$color-background-mid: $color-dullAqua;
+$color-foreground-mid: $color-history;
+
+$color-background-dark: $color-peacocks;
+$color-foreground-dark: $color-history;
+
+$color-accent: $color-assignment;
+
+$color-white: lighten($color-mechanicalBlue, 10%);
+$color-black: darken($color-peacocks, 15%);
+
+$color-danger-dark: #ff6b15;
+$color-danger-light: #fdbb95;

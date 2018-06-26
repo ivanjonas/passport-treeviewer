@@ -1,7 +1,0 @@
-body {
-    background: lightblue;
-}
-
-h1::after {
-    content: " and so does CSS";
-}

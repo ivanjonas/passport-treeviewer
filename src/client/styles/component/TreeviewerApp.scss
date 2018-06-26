@@ -1,0 +1,16 @@
+.c-TreeviewerApp {
+    &::before {
+        content: "ROOT";
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 30px;
+        background-color: $color-black;
+        color: $color-foreground-dark;
+        padding: 0.5em 2em;
+    }
+
+    &-factoryNodes {
+        overflow: hidden;
+    }
+}

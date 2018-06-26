@@ -1,0 +1,18 @@
+body {
+    background: $color-background;
+    color: $color-foreground;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    + p {
+        margin-top: 1em;
+    }
+}
+
+input[type=text],
+input[type=number] {
+    padding: 2px 6px;
+}

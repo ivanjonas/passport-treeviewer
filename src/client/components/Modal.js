@@ -9,7 +9,7 @@ const modalContent = {}
 export default class Modal extends React.Component {
   componentWillMount() {
     const attributes = {
-      handleRequestClose: this.props.handleRequestClose,
+      handleCloseModal: this.props.handleCloseModal,
       handleModalSubmission: this.props.handleModalSubmission
     }
 
@@ -19,7 +19,7 @@ export default class Modal extends React.Component {
     }
 
     modalContent[TOKENS.modes.rename] = {
-      title: "Rename Factory Node?",
+      title: "Rename this Factory Node?",
       body: React.createElement(ModalContent.RenameFactoryNode, attributes)
     }
 
@@ -44,13 +44,13 @@ export default class Modal extends React.Component {
       <ReactModal
         isOpen={this.props.isOpen}
         contentLabel="Selected Option"
-        onRequestClose={this.props.handleClearSelection}
+        onRequestClose={this.props.handleCloseModal}
         closeTimeoutMS={TOKENS.modal.fadeoutDuration}
-        className="Modal"
+        className="c-Modal"
       >
 
-        <h3 className="Modal-title">{this.props.mode && modalContent[this.props.mode].title}</h3>
-        <div className="Modal-body">{this.props.mode && modalContent[this.props.mode].body}</div>
+        <h3 className="c-Modal-title">{this.props.mode && modalContent[this.props.mode].title}</h3>
+        <div className="c-Modal-body">{this.props.mode && modalContent[this.props.mode].body}</div>
       </ReactModal>
     )
   }

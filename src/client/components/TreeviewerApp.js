@@ -104,29 +104,34 @@ export default class TreeviewerApp extends React.Component {
   }
 
   render() {
-    const factories = this.state.tree.length ? (
-      this.state.tree.map((factoryNode, index) => (
-        <FactoryNode
-          key={factoryNode.factoryName}
-          factory={factoryNode}
-          handleGenerateNodes={this.handleGenerateNodes}
-          handleDeleteFactory={this.handleDeleteFactory}
-          handleRenameFactory={this.handleRenameFactory}
-          handleChangeBounds={this.handleChangeBounds}
-        />
-      ))
-    ) : (
-        "There are no factory nodes... create one?"
+    let factories
+    if (this.state.tree.length) {
+      factories = (
+        <div className="c-TreeviewerApp-factoryNodes"> {
+          this.state.tree.map((factoryNode, index) => (
+            <FactoryNode key={factoryNode.id}
+              factory={factoryNode}
+              handleGenerateNodes={this.handleGenerateNodes}
+              handleDeleteFactory={this.handleDeleteFactory}
+              handleRenameFactory={this.handleRenameFactory}
+              handleChangeBounds={this.handleChangeBounds}
+            />))
+        }
+        </div>
       )
+    } else {
+      factories = "There are no factory nodes... create one?"
+    }
+
     return (
-      <div>
+      <div className="c-TreeviewerApp">
         {factories}
         <ActionBar handleCreateFactoryNode={this.handleCreateFactoryNode} />
         <Modal
           isOpen={this.state.isModalOpen}
           mode={this.state.mode}
           handleModalSubmission={this.handleModalSubmission}
-          handleRequestClose={this.handleCloseModal}
+          handleCloseModal={this.handleCloseModal}
         />
       </div>
     )

@@ -1,0 +1,40 @@
+@import '../_config.scss';
+
+.c-Button {
+    border-radius: 4px;
+    border: 1px solid $color-background-mid;
+    padding: .5em 1.4em;
+    color: $color-foreground;
+    background-color: darken($color-background, 10%);
+    cursor: pointer;
+    transition: color 350ms ease, background-color 350ms ease;
+
+    &:hover {
+        color: $color-white;
+        background-color: $color-background-mid;
+    }
+
+    &--large {
+        font-size: 1.5em;
+    }
+
+    &--icon {
+        padding: 3px 10px;
+        margin: -1px 0;
+    }
+
+    &--darkBackground {
+        background-color: lighten($color-foreground, 15%);
+        color: darken($color-background, 10%);
+    }
+
+    &--danger {
+        background-color: $color-danger-dark;
+        color: $color-white;
+        border-color: $color-danger-light;
+        &:hover {
+            background-color: darken($color-danger-dark, 15%);
+            border-color: darken($color-danger-light, 15%);
+        }
+    }
+}
