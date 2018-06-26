@@ -31,11 +31,9 @@ function findById(factoryId) {
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log('a user connected')
     sendTree(socket)
 
     socket.on('/api/getTree', () => {
-      console.log('a user requested the tree')
       sendTree(socket)
     })
 
@@ -75,8 +73,6 @@ module.exports = (io) => {
         oldFactory,
         generateNodeRequest.count)
 
-        console.log(oldFactory)
-        console.log(newFactory)
       if (!newFactory || (oldFactory.nodes.length === 0 && newFactory.nodes.length === 0)) {
         fn(messageObject(false, messages.invalidArguments))
         return

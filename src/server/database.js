@@ -165,12 +165,10 @@ const deleteChildNodesIfExists = (oldFactoryNode, newFactoryNode) => {
   return new Promise((resolve, reject) => {
     if (oldFactoryNode.nodes.length === 0) {
       // if children don't exist, we're done here
-      console.log('did not need to delete any children; there were not any')
       resolve(newFactoryNode)
       return
     }
     
-    console.log('deleting some children now')
     cachedConnection.query(queries.deleteChildNodes, oldFactoryNode.id, (error) => {
       if (error) {
         console.log(error)
@@ -179,7 +177,6 @@ const deleteChildNodesIfExists = (oldFactoryNode, newFactoryNode) => {
           return
         })
       }
-      console.log('deleted')
       resolve(newFactoryNode)
     })
   })
@@ -188,7 +185,6 @@ const deleteChildNodesIfExists = (oldFactoryNode, newFactoryNode) => {
 const insertChildNodesIfExists = (newFactoryNode) => {
   return new Promise((resolve, reject) => {
     if (newFactoryNode.nodes.length === 0) {
-      console.log("didn't need to insert any new children")
       resolve()
       return
     }
@@ -196,9 +192,6 @@ const insertChildNodesIfExists = (newFactoryNode) => {
     const newValues = newFactoryNode.nodes.map((nodeValue) => {
       return [newFactoryNode.id, nodeValue]
     })
-
-    console.log('gonna insert these values now:')
-    console.log(newValues)
 
     cachedConnection.query(queries.bulkInsertChildNode, [newValues], (error, results) => {
       if (error) {
@@ -208,7 +201,6 @@ const insertChildNodesIfExists = (newFactoryNode) => {
           return
         })
       } else {
-        console.log('finished. GOnna try to commit now')
         cachedConnection.commit((error) => {
           if (error) {
             console.log(error)
@@ -216,7 +208,6 @@ const insertChildNodesIfExists = (newFactoryNode) => {
               reject('database rejected insert')
             });
           }
-          console.log('and that went well. We should be completely done now.')
           resolve()
         });
       }
