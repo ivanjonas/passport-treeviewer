@@ -1,10 +1,8 @@
-import { transformMysqlData } from '../lib/data-transform'
 import { factoryNodeFactory, generateChildNodes, changeBounds } from '../models/factoryNode'
+import escape from 'escape-html'
 import database from '../database'
-import socketio from 'socket.io'
 
 let cachedTree
-const connection = database.connect()
 const messages = {
   invalidArguments: 'form did not have valid data',
   factoryNotFound: 'a factory node with that ID was not found',
@@ -15,14 +13,13 @@ function messageObject(success, message) {
 }
 
 function sendTree(receiver) {
-  connection.query({
-    sql: 'select factory_node.id, factory_node.node_name, factory_node.min, factory_node.max, child_node.node_value from factory_node left join child_node on factory_node.id = child_node.factory ORDER BY factory_node.id',
-    nestTables: true
-  }, (error, results) => {
-    if (error) throw error
-
-    cachedTree = transformMysqlData(results)
+  database.getTree()
+  .then((tree) => {
+    cachedTree = tree
     receiver.emit('/api/getTree', cachedTree)
+  }).catch((error) => {
+    console.log(error)
+    throw error
   })
 }
 
@@ -43,6 +40,7 @@ module.exports = (io) => {
     })
 
     socket.on('/api/createFactory', (data, fn) => {
+      data.name = escape(data.name)
       try {
         data.min = parseInt(data.min, 10)
         data.max = parseInt(data.max, 10)
@@ -71,16 +69,20 @@ module.exports = (io) => {
     })
 
     socket.on('/api/generateNodes', (generateNodeRequest, fn) => {
-      const factory = generateChildNodes(
-        findById(generateNodeRequest.factoryId),
+      const oldFactory = findById(generateNodeRequest.factoryId)
+      const childNodeCount = oldFactory.nodes.length
+      const newFactory = generateChildNodes(
+        oldFactory,
         generateNodeRequest.count)
 
-      if (!factory) {
+        console.log(oldFactory)
+        console.log(newFactory)
+      if (!newFactory || (oldFactory.nodes.length === 0 && newFactory.nodes.length === 0)) {
         fn(messageObject(false, messages.invalidArguments))
         return
       }
 
-      database.updateChildNodes(factory)
+      database.updateChildNodes(oldFactory, newFactory)
         .then(() => {
           fn({ success: true })
           sendTree(io)
@@ -116,14 +118,14 @@ module.exports = (io) => {
     })
 
     socket.on('/api/renameFactory', (renameFactoryRequest, fn) => {
-      const newName = renameFactoryRequest.name.toString().trim()
+      const newName = escape(renameFactoryRequest.name.toString().trim())
       const id = renameFactoryRequest.factoryId
 
       if (newName.length === 0 || typeof id !== 'number') {
         fn(messageObject(false, messages.invalidArguments))
       }
 
-      const factory = findById(renameFactoryRequest.factoryId)
+      const factory = findById(id)
       if (!factory) {
         fn(messageObject(false, messages.invalidArguments))
       }

@@ -2,6 +2,7 @@ import appRoot from 'app-root-path'
 import path from 'path'
 import mysql from 'mysql'
 import { readFileSync } from 'fs'
+import { transformMysqlData } from './lib/data-transform'
 
 let cachedConnection
 const connectionConfig = process.env.JAWSDB_URL || {
@@ -63,6 +64,21 @@ module.exports = {
     return cachedConnection
   },
 
+  getTree: () => {
+    return new Promise((resolve, reject) => {
+      cachedConnection.query({
+        sql: 'select factory_node.id, factory_node.node_name, factory_node.min, factory_node.max, child_node.node_value from factory_node left join child_node on factory_node.id = child_node.factory ORDER BY factory_node.id',
+        nestTables: true
+      }, (error, results) => {
+        if (error) {
+          reject(error)
+          return
+        }
+        resolve(transformMysqlData(results))
+      })
+    })
+  },
+
   insertFactoryNode: (factoryNode) => {
     return new Promise((resolve, reject) => {
       const query = mysql.format(queries.insertFactoryNode,
@@ -77,7 +93,7 @@ module.exports = {
     })
   },
 
-  updateChildNodes: (factoryNode) => {
+  updateChildNodes: (oldFactoryNode, newFactoryNode) => {
     return new Promise((resolve, reject) => {
       // delete existing child nodes and create new ones
       // two queries, so use a transaction in case a rollback is needed
@@ -89,51 +105,11 @@ module.exports = {
           return
         }
 
-        cachedConnection.query(queries.deleteChildNodes, factoryNode.id, (error) => {
-          if (error) {
-            console.log(error)
-            cachedConnection.rollback(() => {
-              reject('database rejected deletion of existing child nodes')
-              return
-            })
-          }
-
-          if (factoryNode.nodes.length === 0) {
-            // the deletion was all that was necessary
-            cachedConnection.commit((error) => {
-              if (error) {
-                console.log(error)
-                cachedConnection.rollback(() => {
-                  reject('database rejected insert')
-                });
-              }
-              resolve()
-            });
-          }
-
-          const newValues = factoryNode.nodes.map((nodeValue) => {
-            return [factoryNode.id, nodeValue]
-          })
-
-          cachedConnection.query(queries.bulkInsertChildNode, [newValues], (error, results) => {
-            if (error) {
-              console.log(error)
-              cachedConnection.rollback(() => {
-                reject('database rejected insert')
-                return
-              })
-            } else {
-              cachedConnection.commit((error) => {
-                if (error) {
-                  console.log(error)
-                  cachedConnection.rollback(() => {
-                    reject('database rejected insert')
-                  });
-                }
-                resolve()
-              });
-            }
-          })
+        deleteChildNodesIfExists(oldFactoryNode, newFactoryNode)
+        .then(insertChildNodesIfExists)
+        .then(resolve)
+        .catch((error) => {
+          reject(error)
         })
       })
     })
@@ -181,4 +157,69 @@ module.exports = {
         })
     })
   }
+}
+
+// utility:
+
+const deleteChildNodesIfExists = (oldFactoryNode, newFactoryNode) => {
+  return new Promise((resolve, reject) => {
+    if (oldFactoryNode.nodes.length === 0) {
+      // if children don't exist, we're done here
+      console.log('did not need to delete any children; there were not any')
+      resolve(newFactoryNode)
+      return
+    }
+    
+    console.log('deleting some children now')
+    cachedConnection.query(queries.deleteChildNodes, oldFactoryNode.id, (error) => {
+      if (error) {
+        console.log(error)
+        cachedConnection.rollback(() => {
+          reject('database rejected deletion of existing child nodes')
+          return
+        })
+      }
+      console.log('deleted')
+      resolve(newFactoryNode)
+    })
+  })
+}
+
+const insertChildNodesIfExists = (newFactoryNode) => {
+  return new Promise((resolve, reject) => {
+    if (newFactoryNode.nodes.length === 0) {
+      console.log("didn't need to insert any new children")
+      resolve()
+      return
+    }
+
+    const newValues = newFactoryNode.nodes.map((nodeValue) => {
+      return [newFactoryNode.id, nodeValue]
+    })
+
+    console.log('gonna insert these values now:')
+    console.log(newValues)
+
+    cachedConnection.query(queries.bulkInsertChildNode, [newValues], (error, results) => {
+      if (error) {
+        console.log(error)
+        cachedConnection.rollback(() => {
+          reject('database rejected insert')
+          return
+        })
+      } else {
+        console.log('finished. GOnna try to commit now')
+        cachedConnection.commit((error) => {
+          if (error) {
+            console.log(error)
+            cachedConnection.rollback(() => {
+              reject('database rejected insert')
+            });
+          }
+          console.log('and that went well. We should be completely done now.')
+          resolve()
+        });
+      }
+    })
+  })
 }
