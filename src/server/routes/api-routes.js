@@ -1,5 +1,5 @@
 import { transformMysqlData } from '../lib/data-transform'
-import { factoryNodeFactory, generateChildNodes } from '../models/factoryNode'
+import { factoryNodeFactory, generateChildNodes, changeBounds } from '../models/factoryNode'
 import database from '../database'
 import socketio from 'socket.io'
 
@@ -111,6 +111,7 @@ module.exports = (io) => {
         .catch((error) => {
           console.log(error)
           fn(messageObject(false, messages.factoryNotFound))
+          sendTree(socket)
         })
     })
 
@@ -132,6 +133,45 @@ module.exports = (io) => {
           fn({ success: true })
           sendTree(io)
         }).catch((error) => {
+          console.log(error)
+          fn(messageObject(false, messages.genericDatabaseError))
+        })
+    })
+
+    socket.on('/api/changeBounds', (requestChangeBounds, fn) => {
+      let id
+      let min
+      let max
+      try {
+        id = parseInt(requestChangeBounds.factoryId, 10)
+        min = parseInt(requestChangeBounds.min, 10)
+        max = parseInt(requestChangeBounds.max, 10)
+      } catch (error) {
+        fn(messageObject(false, messages.invalidArguments))
+        return
+      }
+
+      if (isNaN(id) || isNaN(min) || isNaN(max)
+        || min < 0 || min > max) {
+        fn(messageObject(false, messages.invalidArguments))
+        return
+      }
+
+      const oldFactory = findById(id)
+      if (!oldFactory) {
+        fn(messageObject(false, messages.factoryNotFound))
+        sendTree(socket)
+        return
+      }
+
+      const newFactory = changeBounds(oldFactory, min, max)
+
+      database.changeBounds(newFactory)
+        .then(() => {
+          fn({ success: true })
+          sendTree(io)
+        })
+        .catch((error) => {
           console.log(error)
           fn(messageObject(false, messages.genericDatabaseError))
         })

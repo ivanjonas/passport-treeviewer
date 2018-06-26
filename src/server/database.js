@@ -17,7 +17,8 @@ const queries = {
   bulkInsertChildNode: 'INSERT INTO child_node (factory, node_value) VALUES ?',
   deleteChildNodes: 'DELETE FROM child_node WHERE factory = ?',
   deleteFactoryNode: 'DELETE FROM factory_node WHERE id = ?',
-  updateFactoryNodeName: 'UPDATE factory_node SET node_name = ? WHERE id = ?'
+  updateFactoryNodeName: 'UPDATE factory_node SET node_name = ? WHERE id = ?',
+  updateFactoryBounds: 'UPDATE factory_node SET min = ?, max = ? WHERE id = ?'
 }
 
 module.exports = {
@@ -162,6 +163,22 @@ module.exports = {
         }
         resolve()
       })
+    })
+  },
+
+  changeBounds: (factoryNode) => {
+    return new Promise((resolve, reject) => {
+      cachedConnection.query(
+        queries.updateFactoryBounds,
+        [factoryNode.min, factoryNode.max, factoryNode.id],
+        (error) => {
+          if (error) {
+            console.log(error)
+            reject('database rejected update of factory_node boundaries')
+            return
+          }
+          resolve()
+        })
     })
   }
 }

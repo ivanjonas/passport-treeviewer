@@ -51,4 +51,30 @@ const generateChildNodes = (oldFactoryNode, count) => {
   }
 }
 
-export { factoryNodeFactory, generateChildNodes }
+const changeBounds = (oldFactoryNode, min, max) => {
+  if (oldFactoryNode == null
+    || typeof min !== 'number'
+    || typeof max !== 'number'
+    || min < 0
+    || min > max) {
+    return
+  }
+
+  try {
+    const newFactoryNode = factoryNodeFactory.create(
+      oldFactoryNode.factoryName,
+      min,
+      max,
+      oldFactoryNode.nodes)
+
+    if (oldFactoryNode.id) {
+      newFactoryNode.id = oldFactoryNode.id
+    }
+
+    return newFactoryNode
+  } catch (error) {
+    return
+  }
+}
+
+export { factoryNodeFactory, generateChildNodes, changeBounds }

@@ -50,6 +50,12 @@ export default class TreeviewerApp extends React.Component {
     })
   }
 
+  handleChangeBounds = (changeBoundsRequest, fn) => {
+    socket.emit('/api/changeBounds', changeBoundsRequest, (response) => {
+      fn(response)
+    })
+  }
+
   render() {
     var factories = this.state.tree.length ? (
       this.state.tree.map((factoryNode, index) => (
@@ -59,6 +65,7 @@ export default class TreeviewerApp extends React.Component {
           handleGenerateNodes={this.handleGenerateNodes}
           handleDeleteFactory={this.handleDeleteFactory}
           handleRenameFactory={this.handleRenameFactory}
+          handleChangeBounds={this.handleChangeBounds}
         />
       ))
     ) : (

@@ -40,7 +40,7 @@ export default class FactoryNode extends React.Component {
   handleRenameFactory = (e) => {
     e.preventDefault()
 
-    const nameField =  e.target.previousElementSibling
+    const nameField = e.target.previousElementSibling
     const newName = nameField.value.trim()
 
     if (newName.length === 0) {
@@ -52,7 +52,41 @@ export default class FactoryNode extends React.Component {
       name: newName
     }, (result) => {
       if (!result.success) {
-        alert('rename was unsuccessful')
+        alert(result.message)
+      }
+    })
+  }
+
+  handleChangeBounds = (e) => {
+    e.preventDefault()
+
+    const minField = e.target.elements.min
+    const maxField = e.target.elements.max
+    let min
+    let max
+
+    try {
+      min = parseInt(minField.value, 10)
+      max = parseInt(maxField.value, 10)
+    } catch (error) {
+      // type error. Is this even possible with html validation?
+      return
+    }
+
+    // validate
+    if (min > max) {
+      maxField.classList.add('error')
+      // max must be greater than min
+      return
+    }
+
+    this.props.handleChangeBounds({
+      factoryId: this.props.factory.id,
+      min,
+      max
+    }, (result) => {
+      if (!result.success) {
+        alert(result.message)
       }
     })
   }
@@ -62,14 +96,14 @@ export default class FactoryNode extends React.Component {
 
     return (
       <div className="FactoryNode">
-        <span>{factory.factoryName} ({factory.min} : {factory.max})</span>
-        <ul>
-          {
-            factory.nodes.map((element, index) => (
-              <li key={index}>{element}</li>
-            ))
-          }
-        </ul>
+        <div>
+          {factory.factoryName} ({factory.min} : {factory.max})
+          <form onSubmit={this.handleChangeBounds}>
+            <input type="number" name="min" min="0" step="1" defaultValue={factory.min} />
+            <input type="number" name="max" min="0" step="1" defaultValue={factory.max} />
+            <button type="submit">Change bounds</button>
+          </form>
+        </div>
         <div>
           <input type="text" name="name" placeholder="new name" />
           <button onClick={this.handleRenameFactory}>Rename</button>
@@ -79,6 +113,13 @@ export default class FactoryNode extends React.Component {
           </button>
           <input type="number" min="0" max="15" step="1" name="count" />
         </div>
+        <ul>
+          {
+            factory.nodes.map((element, index) => (
+              <li key={index}>{element}</li>
+            ))
+          }
+        </ul>
       </div>
     )
   }
