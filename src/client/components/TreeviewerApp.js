@@ -17,8 +17,6 @@ export default class TreeviewerApp extends React.Component {
     socket.on('/api/getTree', (tree) => {
       this.setState(() => ({ tree }))
     })
-
-    // socket.emit('/api/getTree') // this is how you request a new tree
   }
 
   handleCreateFactoryNode = () => {
@@ -48,8 +46,6 @@ export default class TreeviewerApp extends React.Component {
   }
 
   handleDeleteFactory = (factoryId) => {
-    // User wants to delete a factory. Confirm first.
-
     const emitDeleteRequest = () => {
       socket.emit('/api/deleteFactory', factoryId, this.modalRespondToSocketResponse)
     }
@@ -62,8 +58,6 @@ export default class TreeviewerApp extends React.Component {
   }
 
   handleRenameFactory = (factoryId) => {
-    // User wants to rename a factory. Ask for the new name with a modal.
-
     const emitRenameRequest = (name) => {
       const request = { factoryId, name }
       socket.emit('/api/renameFactory', request, this.modalRespondToSocketResponse)
@@ -116,11 +110,13 @@ export default class TreeviewerApp extends React.Component {
               handleRenameFactory={this.handleRenameFactory}
               handleChangeBounds={this.handleChangeBounds}
             />))
-        }
+          }
         </div>
       )
     } else {
-      factories = "There are no factory nodes... create one?"
+      factories = (
+        <div className="u-mt-10 u-textCenter">There are no factory nodes... create one?</div>
+      )
     }
 
     return (

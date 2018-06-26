@@ -48,7 +48,6 @@ export default class Modal extends React.Component {
         closeTimeoutMS={TOKENS.modal.fadeoutDuration}
         className="c-Modal"
       >
-
         <h3 className="c-Modal-title">{this.props.mode && modalContent[this.props.mode].title}</h3>
         <div className="c-Modal-body">{this.props.mode && modalContent[this.props.mode].body}</div>
       </ReactModal>

@@ -4,7 +4,7 @@ export default class CreateFactoryNodeForm extends React.Component {
   render() {
     return (
       <div className="c-ActionBar">
-        <button className="c-Button c-ActionBar-newFactory" onClick={this.props.handleCreateFactoryNode}> Create a new Factory Node</button>
+        <button className="c-Button c-Button--large c-ActionBar-newFactory" onClick={this.props.handleCreateFactoryNode}> Create a new Factory Node</button>
       </div>
     )
   }

@@ -14,13 +14,13 @@ function messageObject(success, message) {
 
 function sendTree(receiver) {
   database.getTree()
-  .then((tree) => {
-    cachedTree = tree
-    receiver.emit('/api/getTree', cachedTree)
-  }).catch((error) => {
-    console.log(error)
-    throw error
-  })
+    .then((tree) => {
+      cachedTree = tree
+      receiver.emit('/api/getTree', cachedTree)
+    }).catch((error) => {
+      console.log(error)
+      throw error
+    })
 }
 
 function findById(factoryId) {

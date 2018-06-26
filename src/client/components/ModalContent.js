@@ -228,7 +228,7 @@ const handleValidateNameChange = (e) => {
   const name = nameField.value.trim()
 
   if (name.length > 0 && (nameField.validity.customError)) {
-    // only clear the error if it's already errored but has been resolved
+    // only clear the error if it is triggered now but has been resolved
     nameField.setCustomValidity('')
     nameField.reportValidity()
   }
@@ -240,13 +240,10 @@ const handleValidateBoundsChange = (e) => {
   const max = parseInt(maxField.value, 10)
   const min = parseInt(formElements.min.value, 10)
 
-  if (!isNaN(max) && !isNaN(min)) {
-    // it's checkable
-    if (max >= min && (maxField.validity.customError)) {
-      // only clear the error if it's already errored but has been resolved
-      maxField.setCustomValidity('')
-      maxField.reportValidity()
-    }
+  if (!isNaN(max) && !isNaN(min) && max >= min && (maxField.validity.customError)) {
+    // only clear the error if it is triggered now but has been resolved
+    maxField.setCustomValidity('')
+    maxField.reportValidity()
   }
 }
 
